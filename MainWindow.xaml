@@ -1,0 +1,175 @@
+﻿<Window x:Class="QuickAccess.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="QuickAccess"
+        Height="700"
+        Width="1000"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowState="Maximized"
+        Topmost="True"
+        ShowInTaskbar="False"
+        KeyDown="Window_KeyDown" PreviewKeyDown="Window_PreviewKeyDown">
+    <Window.Resources>
+        <!-- Strict Dark Glass: группа. Hover доводится кодом (scale-анимация), триггер дает белую обводку. -->
+        <Style x:Key="WebGroupStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" CornerRadius="18" BorderThickness="1.5"
+                                BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}"
+                                Padding="10,6">
+                            <Border.Effect>
+                                <DropShadowEffect Color="Black" BlurRadius="20" ShadowDepth="2" Opacity="0.75"/>
+                            </Border.Effect>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#FF282830"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#FFFFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#DD2A2A30"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- Ярлык: тот же dark glass, радиус 16, шрифт легче -->
+        <Style x:Key="WebShortcutStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" CornerRadius="18" BorderThickness="1.5"
+                                BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}"
+                                Padding="10,6">
+                            <Border.Effect>
+                                <DropShadowEffect Color="Black" BlurRadius="20" ShadowDepth="2" Opacity="0.75"/>
+                            </Border.Effect>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#FF282830"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#FFFFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#DD2A2A30"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- Нижняя пилюля -->
+        <Style x:Key="PillStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Background" Value="#DC121215"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" CornerRadius="14" BorderThickness="1" BorderBrush="#44FFFFFF"
+                                Background="{TemplateBinding Background}" Padding="12,5">
+                            <Border.Effect>
+                                <DropShadowEffect Color="Black" BlurRadius="12" ShadowDepth="0" Opacity="0.5"/>
+                            </Border.Effect>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="White"/>
+                                <Setter Property="Background" Value="#CC1A1A1E"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- Яркая кнопка завершения расстановки -->
+        <Style x:Key="FinishStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Background" Value="#FF2FA14F"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="14" BorderThickness="1" BorderBrush="White"
+                                Background="{TemplateBinding Background}" Padding="14,6">
+                            <Border.Effect>
+                                <DropShadowEffect Color="Black" BlurRadius="14" ShadowDepth="0" Opacity="0.6"/>
+                            </Border.Effect>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- Круглая красная кнопка удаления -->
+        <Style x:Key="DeleteStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Background" Value="#FFE5484D"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="12" BorderThickness="1" BorderBrush="#66FFFFFF"
+                                Background="{TemplateBinding Background}" Padding="4">
+                            <Border.Effect>
+                                <DropShadowEffect Color="Black" BlurRadius="10" ShadowDepth="0" Opacity="0.6"/>
+                            </Border.Effect>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FFFF6B6B"/>
+                                <Setter Property="BorderBrush" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Canvas x:Name="WebCanvas" Background="Transparent"
+                MouseDown="WebCanvas_MouseDown"/>
+        <Border x:Name="BottomBar" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,20"
+                CornerRadius="16" BorderThickness="1" BorderBrush="#44FFFFFF" Background="#DC121215">
+            <Border.Effect>
+                <DropShadowEffect Color="Black" BlurRadius="16" ShadowDepth="0" Opacity="0.55"/>
+            </Border.Effect>
+            <StackPanel Orientation="Horizontal" Margin="8,6">
+                <Button x:Name="AddGroupBtn" Content="+ Group" Margin="4" Style="{StaticResource PillStyle}" Click="AddGroup_Click"/>
+                <Button x:Name="HideBtn" Content="To tray (Esc)" Margin="4" Style="{StaticResource PillStyle}" Click="Hide_Click"/>
+                <Button x:Name="AutostartBtn" Content="Autostart: off" Margin="4" Style="{StaticResource PillStyle}" Click="Autostart_Click"/>
+                <Button x:Name="SettingsBtn" Content="⚙ Settings" Margin="4" Style="{StaticResource PillStyle}" Click="Settings_Click"/>
+                <Button x:Name="ModulesBtn" Content="🧩 Modules" Margin="4" Style="{StaticResource PillStyle}" Click="Modules_Click"/>
+                <Button x:Name="EditModeBtn" Content="✏ Arrange" Margin="4" Style="{StaticResource PillStyle}" Click="EditMode_Click"/>
+                <Button x:Name="FinishEditBtn" Content="✓ Finish arranging" Margin="4" Style="{StaticResource FinishStyle}" Click="FinishEdit_Click" Visibility="Collapsed"/>
+                <TextBlock x:Name="HintText" Text="Show/hide • Right-click a group for menu"
+                           Foreground="#BFFFFFFF" VerticalAlignment="Center" Margin="10,0,4,0" FontSize="11"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>
